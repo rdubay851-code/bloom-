@@ -1,25 +1,13 @@
 # Bloom ambient music
 
-This version includes three tiny original ambient WAV loops:
+Put the three mood tracks in this folder's `assets/` directory using these exact names:
 
-- `assets/soft-light.wav` — warm/gentle
-- `assets/night-blue.wav` — quiet/deep
-- `assets/morning-mist.wav` — airy/morning
+- `soft-light.wav` — Soft Light
+- `night-blue.wav` — Night Blue
+- `morning-mist.wav` — Morning Mist
 
-Bloom automatically selects the track that matches the chosen mood and keeps the volume very low.
+Bloom keeps the music at a low background level (9%). It tries to begin automatically when the site opens. Modern browsers may block audible autoplay; in that case **the first tap/click anywhere on the site starts the music automatically**. No music welcome popup is required.
 
-## Replace them with your own music
+After the first interaction, changing moods cross-fades to the selected mood's track. The current mood and music preference are remembered on the device.
 
-Keep the same filenames and replace the WAV files, or edit `musicByMood` in `app.js` to point to MP3 files such as:
-
-```js
-const musicByMood={
-  soft:'assets/soft-light.mp3',
-  night:'assets/night-blue.mp3',
-  mist:'assets/morning-mist.mp3'
-};
-```
-
-## Important browser rule
-
-Desktop and mobile browsers can block audible autoplay until the visitor interacts with the page. Bloom tries to start automatically, and if the browser blocks it, the first tap/click/key press starts the music automatically. This is a browser security rule and cannot reliably be bypassed by JavaScript.
+For a public site, make sure you have permission/license to use any music you add.
