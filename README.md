@@ -1,23 +1,24 @@
-# Bloom
+# Bloom — a softer place to begin again
 
-A calming, responsive multi-page wellbeing website for difficult or lonely moments.
+A mobile-friendly, multi-page static site for gentle reflection after difficult days.
 
-## What's new
-- Persistent mood switcher: **Soft Light**, **Night Blue**, **Morning Mist**.
-- Mood preference is saved in `localStorage` and restored automatically.
-- Dynamic atmospheric background changes with the selected mood.
-- Back button on every page; it uses browser history and falls back to Home.
-- New **Poetry** page with several original short poems, shuffle and copy controls.
-- Expanded Home page with more destinations and gentle interactive elements.
-- Night mode adds subtle stars and a cooler ambient palette.
-- Future activity chips can be selected interactively.
+## Highlights
+- Three remembered atmospheres: Soft Light, Night Blue, Morning Mist
+- Responsive mobile bottom navigation and desktop navigation
+- Back button on every page
+- Dynamic daily notes, rotating prompts, poems and comfort lines
+- Private browser-local journal
+- Guided 60-second breathing interaction
+- Future activity picker
+- Optional ambient tone generated in-browser
+- Animated aurora, floating light, stars in Night Blue, grain and micro-interactions
+- No framework or build step required
 
 ## Run locally
-
 ```bash
 python -m http.server 8080
 ```
+Then open http://localhost:8080
 
-Open `http://localhost:8080`.
-
-Everything is client-side. The journal is stored locally in the browser with `localStorage` and is not uploaded by this project.
+## Publish
+Upload the `bloom-site` folder to Netlify, GitHub Pages, Cloudflare Pages, or another static host.
