@@ -26,8 +26,41 @@ if(key==='poetry')return `<section class="page-head page-enter"><span class="eye
 return `<section class="center-page page-enter"><span class="eyebrow">06 · about bloom</span><h1>A small place to <span>land.</span></h1><p class="lead">An intentionally simple corner of the internet that asks nothing from you.</p><div class="principles glass"><div><b>Make the atmosphere yours.</b><p>Soft Light, Night Blue and Morning Mist are remembered on this device.</p></div><div><b>Private by default.</b><p>The journal stays in this browser in this version.</p></div><div><b>Little surprises.</b><p>Bloom changes its daily note, stars, particles and atmosphere so it doesn't feel exactly the same each visit.</p></div><div><b>For real support too.</b><p>A website can be comforting, but trusted people and professionals matter when life feels too heavy.</p></div></div></section>`}
 function toast(s){const t=document.getElementById('toast');if(!t)return;t.textContent=s;t.classList.add('show');clearTimeout(t._x);t._x=setTimeout(()=>t.classList.remove('show'),1800)}
 let audio=null;
-function audioToggle(){const b=document.getElementById('soundBtn');if(audio){audio.stop();audio=null;b.textContent='♪';toast('Ambient off');return}const src=get('bloomMusic','assets/bloom-ambient.mp3');const el=new Audio(src);el.loop=true;el.volume=.28;el.play().then(()=>{audio=el;b.textContent='◼';toast('Ambient music on')}).catch(()=>toast('Add your music at assets/bloom-ambient.mp3, then tap ♪'))}
-function bind(key){const back=document.getElementById('backBtn');back.onclick=e=>{e.preventDefault();if(history.length>1)history.back();else location.hash='#/home'};const panel=document.getElementById('moodPanel');document.getElementById('moodBtn').onclick=()=>panel.classList.toggle('open');document.getElementById('closeMood').onclick=()=>panel.classList.remove('open');document.querySelectorAll('.mood-option').forEach(b=>b.onclick=()=>{applyMood(b.dataset.mood);updateMood();panel.classList.remove('open');spark()});document.getElementById('menuBtn').onclick=()=>document.getElementById('mobileMenu').classList.toggle('open');document.querySelectorAll('.mobile-menu a').forEach(a=>a.onclick=()=>document.getElementById('mobileMenu').classList.remove('open'));document.getElementById('soundBtn').onclick=audioToggle; if(key==='home')bindHome();if(key==='breathe')bindBreathe();if(key==='journal')bindJournal();if(key==='future')bindFuture();if(key==='comfort')bindComfort();if(key==='poetry')bindPoetry()}
+const musicByMood={soft:'assets/soft-light.wav',night:'assets/night-blue.wav',mist:'assets/morning-mist.wav'};
+let musicWanted=true;
+function musicPath(){return musicByMood[mood()]||musicByMood.soft}
+function startAmbient(force=false){
+  if(!musicWanted)return;
+  const src=musicPath();
+  if(!audio){
+    audio=new Audio(src); audio.loop=true; audio.volume=.16; audio.preload='auto';
+    audio.setAttribute('playsinline','');
+  } else if(audio.src!==new URL(src,location.href).href){
+    audio.src=src; audio.load();
+  }
+  const p=audio.play();
+  if(p&&p.catch)p.catch(()=>{if(force)toast('Tap anywhere once to start the gentle music ♡')});
+  const b=document.getElementById('soundBtn'); if(b)b.textContent='◼';
+}
+function audioToggle(){
+  if(audio && !audio.paused){audio.pause();musicWanted=false;set('bloomMusicOn','0');const b=document.getElementById('soundBtn');if(b)b.textContent='♪';toast('Ambient off');return}
+  musicWanted=true;set('bloomMusicOn','1');startAmbient(true);toast('Ambient music on · very softly');
+}
+function changeAmbientForMood(){
+  if(!musicWanted)return;
+  const wasPlaying=audio&&!audio.paused;
+  const src=musicPath();
+  if(!audio){startAmbient(false);return}
+  audio.src=src;audio.load();audio.volume=.16;
+  if(wasPlaying){const p=audio.play();if(p&&p.catch)p.catch(()=>{})}
+}
+function enableAutoplayFallback(){
+  if(!musicWanted)return;
+  const once=()=>{startAmbient(false);document.removeEventListener('pointerdown',once);document.removeEventListener('touchstart',once);document.removeEventListener('keydown',once)};
+  document.addEventListener('pointerdown',once,{passive:true});document.addEventListener('touchstart',once,{passive:true});document.addEventListener('keydown',once);
+  setTimeout(()=>startAmbient(false),120);
+}
+function bind(key){const back=document.getElementById('backBtn');back.onclick=e=>{e.preventDefault();if(history.length>1)history.back();else location.hash='#/home'};const panel=document.getElementById('moodPanel');document.getElementById('moodBtn').onclick=()=>panel.classList.toggle('open');document.getElementById('closeMood').onclick=()=>panel.classList.remove('open');document.querySelectorAll('.mood-option').forEach(b=>b.onclick=()=>{applyMood(b.dataset.mood);updateMood();changeAmbientForMood();panel.classList.remove('open');spark()});document.getElementById('menuBtn').onclick=()=>document.getElementById('mobileMenu').classList.toggle('open');document.querySelectorAll('.mobile-menu a').forEach(a=>a.onclick=()=>document.getElementById('mobileMenu').classList.remove('open'));document.getElementById('soundBtn').onclick=audioToggle; if(key==='home')bindHome();if(key==='breathe')bindBreathe();if(key==='journal')bindJournal();if(key==='future')bindFuture();if(key==='comfort')bindComfort();if(key==='poetry')bindPoetry()}
 function updateMood(){const k=mood(),b=document.getElementById('moodBtn');if(b)b.innerHTML=moods[k].icon+' <span>'+moods[k].name+'</span>';document.querySelectorAll('.mood-option').forEach(x=>x.classList.toggle('selected',x.dataset.mood===k))}
 function bindHome(){const c=document.getElementById('constellation');if(c)for(let i=0;i<25;i++){const s=document.createElement('i');s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.animationDelay=Math.random()*3+'s';c.appendChild(s)}document.getElementById('dailyAction').onclick=()=>{const n=daily[idx(daily.length)][2];toast(n+' ✦')};document.querySelectorAll('.micro-card').forEach(c=>c.addEventListener('click',()=>{c.classList.add('done');setTimeout(()=>c.classList.remove('done'),700)}))}
 function bindBreathe(){const o=document.getElementById('breathOrb'),t=document.getElementById('breathText'),tm=document.getElementById('breathTimer'),b=document.getElementById('startBreath');b.onclick=()=>{let n=60;b.disabled=true;o.classList.add('running');let iv=setInterval(()=>{n--;tm.textContent=n;t.textContent=n%8<4?'In…':'Out…';if(n<=0){clearInterval(iv);o.classList.remove('running');t.textContent='You made it';b.disabled=false;spark();toast('A minute just became softer.')}},1000)}}
@@ -36,7 +69,7 @@ function bindFuture(){let i=idx(future.length),p=document.getElementById('future
 function bindComfort(){let i=idx(comfort.length),line=document.getElementById('comfortLine');line.textContent=comfort[i];document.getElementById('comfortNext').onclick=()=>{i=(i+1)%comfort.length;line.textContent=comfort[i];spark()}}
 function bindPoetry(){let i=idx(poems.length),title=document.getElementById('poemTitle'),text=document.getElementById('poemText');const render=()=>{title.textContent=poems[i][0];text.textContent=poems[i][1]};render();document.getElementById('nextPoem').onclick=()=>{i=(i+1)%poems.length;render();spark()};document.getElementById('copyPoem').onclick=()=>{const v=title.textContent+'\n\n'+text.textContent;if(navigator.clipboard)navigator.clipboard.writeText(v).then(()=>toast('Poem copied')).catch(()=>toast('Copy unavailable'));else toast('Copy unavailable')}}
 function spark(){for(let i=0;i<10;i++){const s=document.createElement('i');s.textContent=Math.random()>.4?'✦':'·';s.style.position='fixed';s.style.left=(45+Math.random()*10)+'%';s.style.top=(45+Math.random()*10)+'%';s.style.color='var(--accent)';s.style.zIndex=100;s.style.pointerEvents='none';document.body.appendChild(s);const dx=(Math.random()-.5)*260,dy=(Math.random()-.5)*190;const a=s.animate([{transform:'scale(0)',opacity:0},{transform:`translate(${dx}px,${dy}px) scale(1)`,opacity:1},{opacity:0}],{duration:1000});a.onfinish=()=>s.remove()}}
-function route(){let key=(location.hash||'#/home').replace('#/','');if(!['home','breathe','journal','future','comfort','poetry','about'].includes(key))key='home';A.innerHTML=shell(page(key),key);applyMood(mood());updateMood();bind(key);requestAnimationFrame(()=>document.querySelectorAll('.page-enter').forEach(x=>x.classList.add('show')))}
+function route(){let key=(location.hash||'#/home').replace('#/','');if(!['home','breathe','journal','future','comfort','poetry','about'].includes(key))key='home';A.innerHTML=shell(page(key),key);applyMood(mood());updateMood();bind(key);enableAutoplayFallback();requestAnimationFrame(()=>document.querySelectorAll('.page-enter').forEach(x=>x.classList.add('show')))}
 window.addEventListener('hashchange',route);document.addEventListener('pointermove',e=>{document.documentElement.style.setProperty('--mx',e.clientX+'px');document.documentElement.style.setProperty('--my',e.clientY+'px')},{passive:true});
 try{const h=new Date().getHours();if(h>=20||h<6)set('autoMood','night');else if(h<10)set('autoMood','mist')}catch(e){} route();
 })();
