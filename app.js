@@ -11,7 +11,7 @@ function idx(n){const d=new Date();return (d.getFullYear()*372+d.getMonth()*31+d
 function mood(){let k=get('bloomMood','soft');return moods[k]?k:'soft'}
 function applyMood(k){if(!moods[k])k='soft';document.body.dataset.mood=k;set('bloomMood',k);document.querySelector('meta[name=theme-color]').setAttribute('content',k==='night'?'#081525':k==='mist'?'#dfecef':'#f4eee7')}
 function esc(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function shell(content,key){const nav=[['home','⌂','Home'],['breathe','◌','Breathe'],['journal','✎','Write'],['future','✦','Future'],['comfort','♡','Comfort'],['poetry','❋','Poetry']];return `<div class="ambient-layer"><div class="aurora a1"></div><div class="aurora a2"></div><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div><div class="stars"></div><div class="grain"></div><div class="cursor-glow"></div></div><main class="site"><nav class="nav"><div class="nav-left"><button class="back" id="backBtn" aria-label="Go back">← <span>Back</span></button><a class="logo" href="#/home">bloom<span>°</span></a></div><div class="navlinks">${nav.map(x=>`<a href="#/${x[0]}" class="${key===x[0]?'active':''}">${x[1]} ${x[2]}</a>`).join('')}</div><div class="nav-tools"><button class="mood-button" id="moodBtn">${moods[mood()].icon} <span>${moods[mood()].name}</span></button><button class="sound" id="soundBtn" title="Ambient music">♪</button><button class="menu" id="menuBtn">☰</button></div></nav><div class="mobile-menu" id="mobileMenu">${nav.map(x=>`<a href="#/${x[0]}">${x[1]} ${x[2]}</a>`).join('')}</div><div class="mood-panel" id="moodPanel"><div class="mood-panel-head"><div><b>Choose your atmosphere</b><small>Your choice stays on this device.</small></div><button id="closeMood">×</button></div><div class="mood-options">${Object.entries(moods).map(([id,m])=>`<button class="mood-option" data-mood="${id}"><span class="mood-icon">${m.icon}</span><span><b>${m.name}</b><small>${m.desc}</small></span><i>✓</i></button>`).join('')}</div></div>${content}<footer class="footer"><span>For the days that feel too quiet.</span><div><a href="#/about">About Bloom</a><a href="#/poetry">A few words</a></div></footer><div class="bottom-nav">${nav.slice(0,5).map(x=>`<a href="#/${x[0]}" class="${key===x[0]?'active':''}"><span>${x[1]}</span>${x[2]}</a>`).join('')}</div></main><div class="toast" id="toast"></div><div class="music-gate" id="musicGate"><div class="music-gate-card"><span class="music-glyph">♪</span><b>A little music for this moment</b><small>Tap once to let Bloom play softly in the background.</small><button id="musicStart" class="btn primary small">Enter Bloom · ♪</button></div></div>`}
+function shell(content,key){const nav=[['home','⌂','Home'],['breathe','◌','Breathe'],['journal','✎','Write'],['future','✦','Future'],['comfort','♡','Comfort'],['poetry','❋','Poetry']];return `<div class="ambient-layer"><div class="aurora a1"></div><div class="aurora a2"></div><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div><div class="stars"></div><div class="grain"></div><div class="cursor-glow"></div></div><main class="site"><nav class="nav"><div class="nav-left"><button class="back" id="backBtn" aria-label="Go back">← <span>Back</span></button><a class="logo" href="#/home">bloom<span>°</span></a></div><div class="navlinks">${nav.map(x=>`<a href="#/${x[0]}" class="${key===x[0]?'active':''}">${x[1]} ${x[2]}</a>`).join('')}</div><div class="nav-tools"><button class="mood-button" id="moodBtn">${moods[mood()].icon} <span>${moods[mood()].name}</span></button><button class="sound" id="soundBtn" title="Ambient music">♪</button><button class="menu" id="menuBtn">☰</button></div></nav><div class="mobile-menu" id="mobileMenu">${nav.map(x=>`<a href="#/${x[0]}">${x[1]} ${x[2]}</a>`).join('')}</div><div class="mood-panel" id="moodPanel"><div class="mood-panel-head"><div><b>Choose your atmosphere</b><small>Your choice stays on this device.</small></div><button id="closeMood">×</button></div><div class="mood-options">${Object.entries(moods).map(([id,m])=>`<button class="mood-option" data-mood="${id}"><span class="mood-icon">${m.icon}</span><span><b>${m.name}</b><small>${m.desc}</small></span><i>✓</i></button>`).join('')}</div></div>${content}<footer class="footer"><span>For the days that feel too quiet.</span><div><a href="#/about">About Bloom</a><a href="#/poetry">A few words</a></div></footer><div class="bottom-nav">${nav.slice(0,5).map(x=>`<a href="#/${x[0]}" class="${key===x[0]?'active':''}"><span>${x[1]}</span>${x[2]}</a>`).join('')}</div></main><div class="music-welcome" id="musicWelcome" aria-hidden="true"><div class="music-welcome-card"><div class="music-welcome-symbol">♪</div><span class="eyebrow">a little something, softly</span><h2>For the moments<br><span>you need a little light.</span></h2><p>Take your time here. There is no pressure to feel better, be strong, or have all the answers. Just breathe, stay awhile, and let the quiet be kind to you.</p><button class="btn primary" id="enterBloom">Enter Bloom · ♪</button><small>The music stays very soft, and you can turn it off anytime.</small></div></div><div class="toast" id="toast"></div>`}
 function home(){
 const d=daily[idx(daily.length)];let visits=Number(get('visits','0'))+1;set('visits',visits);
 const cards=[['breathe','◌','Breathe',"A tiny guided pause for when your thoughts won't sit still.",'60 seconds · gentle'],['journal','✎','Write','Put the messy version on a page. No audience. No perfect sentences.','private · on this device'],['future','✦','Future','Small ideas for tomorrow, next month, and the life still waiting to surprise you.','shuffle · explore'],['comfort','♡','Comfort','Short reminders for moments when your own mind is being harder on you than it should.','tap for another'],['poetry','❋','Poetry','Original little pieces to read when advice feels like too much.','new words · daily'],['about','☼','Your space','Change the atmosphere, sound and tiny details until this corner feels like yours.','soft · night · mist']];
@@ -28,76 +28,70 @@ function toast(s){const t=document.getElementById('toast');if(!t)return;t.textCo
 let audio=null;
 const musicByMood={soft:'assets/soft-light.wav',night:'assets/night-blue.wav',mist:'assets/morning-mist.wav'};
 let musicWanted=get('bloomMusicOn','1')!=='0';
-let musicReady=false;
-let musicToken=0;
-
+let musicPromptSeen=get('bloomMusicPromptSeen','0')==='1';
 function musicPath(){return musicByMood[mood()]||musicByMood.soft}
-
-function showMusicGate(show){
-  const gate=document.getElementById('musicGate');
-  if(gate) gate.classList.toggle('show',!!show);
-}
-function updateSoundButton(){
-  const b=document.getElementById('soundBtn');
-  if(b)b.textContent=(audio&&!audio.paused)?'◼':'♪';
-}
-function makeAudio(src){
-  const a=new Audio();
-  a.src=src;
-  a.loop=true;
-  a.preload='auto';
-  a.volume=.10;
-  a.setAttribute('playsinline','');
-  a.setAttribute('webkit-playsinline','');
-  a.addEventListener('error',()=>showMusicGate(true),{once:true});
-  return a;
-}
-function startAmbient(fromGesture=false){
-  if(!musicWanted)return;
-  const src=new URL(musicPath(),location.href).href;
+function currentMusicUrl(src){try{return new URL(src,location.href).href}catch(e){return src}}
+function startAmbient(showToastOnFail=false){
+  if(!musicWanted)return Promise.resolve(false);
+  const src=musicPath();
   if(!audio){
-    audio=makeAudio(src);
-  }else if(audio.src!==src){
-    const old=audio;
-    audio=makeAudio(src);
-    const token=++musicToken;
-    const p=audio.play();
-    if(p&&p.then)p.then(()=>{
-      if(token===musicToken){old.pause();old.src='';showMusicGate(false);musicReady=true;updateSoundButton()}
-    }).catch(()=>{audio=old;showMusicGate(!fromGesture);updateSoundButton()});
-    return;
+    audio=new Audio();
+    audio.loop=true;
+    audio.volume=.10;
+    audio.preload='auto';
+    audio.setAttribute('playsinline','');
+  }
+  if(audio.src!==currentMusicUrl(src)){
+    audio.src=src;
+    audio.load();
   }
   const p=audio.play();
-  if(p&&p.then){
-    p.then(()=>{musicReady=true;showMusicGate(false);updateSoundButton()})
-     .catch(()=>{updateSoundButton();showMusicGate(!fromGesture)})
-  }
+  if(p&&p.then){return p.then(()=>{updateSoundButton();return true}).catch(()=>{updateSoundButton();if(showToastOnFail)toast('Tap anywhere once and I’ll bring the music in softly ♡');return false})}
+  updateSoundButton();
+  return Promise.resolve(!audio.paused);
 }
+function updateSoundButton(){const b=document.getElementById('soundBtn');if(b)b.textContent=(audio&&!audio.paused)?'◼':'♪'}
 function audioToggle(){
-  if(audio && !audio.paused){
-    audio.pause();musicWanted=false;set('bloomMusicOn','0');updateSoundButton();toast('Ambient off');
-    return;
-  }
-  musicWanted=true;set('bloomMusicOn','1');startAmbient(true);toast('Ambient music on · very softly');
+  if(audio && !audio.paused){audio.pause();musicWanted=false;set('bloomMusicOn','0');updateSoundButton();toast('Ambient off');return}
+  musicWanted=true;set('bloomMusicOn','1');startAmbient(true).then(ok=>{if(ok)toast('Ambient music on · very softly')});
 }
 function changeAmbientForMood(){
   if(!musicWanted)return;
-  startAmbient(true);
+  const src=musicPath();
+  if(!audio){startAmbient(false);return}
+  const wasPlaying=!audio.paused;
+  const oldVolume=audio.volume;
+  if(wasPlaying){
+    const fade=audio.animate?audio.animate([{opacity:1},{opacity:.5}],{duration:180}):null;
+    setTimeout(()=>{audio.src=src;audio.load();audio.volume=0;const p=audio.play();if(p&&p.catch)p.catch(()=>{});let v=0;const up=setInterval(()=>{v+=.02;audio.volume=Math.min(oldVolume,v);if(v>=oldVolume)clearInterval(up)},40)},120);
+  }else{audio.src=src;audio.load();audio.volume=oldVolume;}
+}
+function revealMusicWelcome(){
+  const overlay=document.getElementById('musicWelcome');
+  if(!overlay||musicPromptSeen)return;
+  overlay.classList.add('show');overlay.setAttribute('aria-hidden','false');
+  musicPromptSeen=true;set('bloomMusicPromptSeen','1');
+  const enter=document.getElementById('enterBloom');
+  const close=()=>{musicPromptSeen=true;set('bloomMusicPromptSeen','1');overlay.classList.remove('show');overlay.setAttribute('aria-hidden','true');startAmbient(false);document.removeEventListener('pointerdown',close,true);document.removeEventListener('keydown',close,true)};
+  if(enter)enter.addEventListener('click',close,{once:true});
+  // The button is the intended interaction; don't dismiss on background clicks.
 }
 function enableAutoplayFallback(){
   if(!musicWanted)return;
-  startAmbient(false);
-  const once=()=>{
-    startAmbient(true);
-    document.removeEventListener('pointerdown',once);
-    document.removeEventListener('touchstart',once);
-    document.removeEventListener('keydown',once);
-  };
-  document.addEventListener('pointerdown',once,{passive:true});
-  document.addEventListener('touchstart',once,{passive:true});
-  document.addEventListener('keydown',once);
+  startAmbient(false).then(ok=>{
+    if(ok)return;
+    // If this browser blocks autoplay, only the first-ever visit gets the welcome card.
+    if(!musicPromptSeen)revealMusicWelcome();
+    const once=()=>{
+      startAmbient(false);
+      document.removeEventListener('pointerdown',once,true);
+      document.removeEventListener('keydown',once,true);
+    };
+    document.addEventListener('pointerdown',once,true);
+    document.addEventListener('keydown',once,true);
+  });
 }
-function bind(key){const back=document.getElementById('backBtn');back.onclick=e=>{e.preventDefault();if(history.length>1)history.back();else location.hash='#/home'};const panel=document.getElementById('moodPanel');document.getElementById('moodBtn').onclick=()=>panel.classList.toggle('open');document.getElementById('closeMood').onclick=()=>panel.classList.remove('open');document.querySelectorAll('.mood-option').forEach(b=>b.onclick=()=>{applyMood(b.dataset.mood);updateMood();changeAmbientForMood();panel.classList.remove('open');spark()});document.getElementById('menuBtn').onclick=()=>document.getElementById('mobileMenu').classList.toggle('open');document.querySelectorAll('.mobile-menu a').forEach(a=>a.onclick=()=>document.getElementById('mobileMenu').classList.remove('open'));document.getElementById('soundBtn').onclick=audioToggle; const ms=document.getElementById('musicStart'); if(ms)ms.onclick=()=>{musicWanted=true;set('bloomMusicOn','1');startAmbient(true);showMusicGate(false)}; if(key==='home')bindHome();if(key==='breathe')bindBreathe();if(key==='journal')bindJournal();if(key==='future')bindFuture();if(key==='comfort')bindComfort();if(key==='poetry')bindPoetry()}
+function bind(key){const back=document.getElementById('backBtn');back.onclick=e=>{e.preventDefault();if(history.length>1)history.back();else location.hash='#/home'};const panel=document.getElementById('moodPanel');document.getElementById('moodBtn').onclick=()=>panel.classList.toggle('open');document.getElementById('closeMood').onclick=()=>panel.classList.remove('open');document.querySelectorAll('.mood-option').forEach(b=>b.onclick=()=>{applyMood(b.dataset.mood);updateMood();changeAmbientForMood();panel.classList.remove('open');spark()});document.getElementById('menuBtn').onclick=()=>document.getElementById('mobileMenu').classList.toggle('open');document.querySelectorAll('.mobile-menu a').forEach(a=>a.onclick=()=>document.getElementById('mobileMenu').classList.remove('open'));document.getElementById('soundBtn').onclick=audioToggle; if(key==='home')bindHome();if(key==='breathe')bindBreathe();if(key==='journal')bindJournal();if(key==='future')bindFuture();if(key==='comfort')bindComfort();if(key==='poetry')bindPoetry()}
 function updateMood(){const k=mood(),b=document.getElementById('moodBtn');if(b)b.innerHTML=moods[k].icon+' <span>'+moods[k].name+'</span>';document.querySelectorAll('.mood-option').forEach(x=>x.classList.toggle('selected',x.dataset.mood===k))}
 function bindHome(){const c=document.getElementById('constellation');if(c)for(let i=0;i<25;i++){const s=document.createElement('i');s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.animationDelay=Math.random()*3+'s';c.appendChild(s)}document.getElementById('dailyAction').onclick=()=>{const n=daily[idx(daily.length)][2];toast(n+' ✦')};document.querySelectorAll('.micro-card').forEach(c=>c.addEventListener('click',()=>{c.classList.add('done');setTimeout(()=>c.classList.remove('done'),700)}))}
 function bindBreathe(){const o=document.getElementById('breathOrb'),t=document.getElementById('breathText'),tm=document.getElementById('breathTimer'),b=document.getElementById('startBreath');b.onclick=()=>{let n=60;b.disabled=true;o.classList.add('running');let iv=setInterval(()=>{n--;tm.textContent=n;t.textContent=n%8<4?'In…':'Out…';if(n<=0){clearInterval(iv);o.classList.remove('running');t.textContent='You made it';b.disabled=false;spark();toast('A minute just became softer.')}},1000)}}
